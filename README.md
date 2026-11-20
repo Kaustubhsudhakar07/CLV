@@ -1,89 +1,156 @@
-# Customer Lifetime Value (CLV) Forecasting
+# Customer Lifetime Value (CLV) Prediction & Optimization
 
-This project forecasts **Customer Lifetime Value (CLV)** using both **probabilistic modeling** and **machine learning**, providing insights into customer behavior, revenue forecasting, and strategic segmentation.
-
----
-
-## 📌 Project Overview
-
-Customer Lifetime Value (CLV) helps businesses understand how much revenue they can expect from customers over time.  
-This notebook explores two approaches:
-
-1. **Probabilistic Model (Lifetimes Library)**  
-   - Uses customer transaction history to model repeat purchases and churn.  
-   - Great for long-term strategic planning.  
-
-2. **Machine Learning Model (XGBoost)**  
-   - Predicts spend more accurately using transaction-level features.  
-   - Best for short-term tactical forecasting.  
+A production-grade, end-to-end data analytics and machine learning framework that predicts Customer Lifetime Value (CLV), models churn probability, segments customers into actionable commercial tiers, and serves interactive insights via a Streamlit dashboard.
 
 ---
 
-## 🔑 Key Insights
+## 📌 Project Executive Summary
 
-### 1. Revenue Forecast
-- Predicted **£4.5M revenue** over the next **6 months**.  
-- Top 10 customers expected to generate between **£36k–£129k** each.
+Customer Lifetime Value (CLV) quantifies the long-term monetary value of customer relationships. In non-contractual commercial settings (e.g., e-commerce, wholesale retail), customers churn silently without formal notice. This project solves that core challenge by:
 
-### 2. Customer Segmentation
-- **Top-Tier (25%)**: ~£2,349 average CLV (6 months).  
-- **Mid-Tier (50%)**: ~£327 average CLV.  
-- **Low-Tier (25%)**: ~£82 average CLV.  
-
-### 3. Profiling High-Value Customers
-- **Geography**: Majority located in the **United Kingdom**.  
-- **Product Preferences**:  
-  - Low-value customers buy widely.  
-  - High-value customers prefer **specific, higher-margin categories** (e.g., *Regency Cake Stand*).  
+1. **Processing & Validating 1M+ Raw Transactions**: Built an audited, 5-stage cleaning pipeline that eliminated cancellations, missing identifiers, and invalid transactions, producing an 805,549 clean transaction baseline.
+2. **Probabilistic CLV Forecasting**: Implemented the **BG/NBD** (Beta-Geometric / Negative Binomial Distribution) model for repeat purchase counts and the **Gamma-Gamma** model for future transaction values via the `lifetimes` library.
+3. **Machine Learning Benchmark**: Trained a chronologically separated **XGBoost Regressor** on engineered customer-level features to benchmark against the probabilistic model without temporal data leakage.
+4. **Quantile Customer Segmentation**: Segmented the customer base into **High**, **Medium**, and **Low** value tiers, revealing that the top 33% of customers drive **90.9%** of predicted future revenue.
+5. **Interactive Streamlit Dashboard**: Developed a 5-page analytical web application for executive KPIs, customer exploration, dynamic filters, customer lookups, and model diagnostics.
 
 ---
 
-## 📊 Model Comparison
+## 📊 Dataset & Pipeline Statistics (Verified Real Data)
 
-| Model              | RMSE   | MAE  | Best For |
-|--------------------|--------|------|----------|
-| Lifetimes (BG/NBD) | ~3182  | ~434 | Strategic CLV estimation |
-| XGBoost            | ~2640  | ~364 | Short-term financial forecasting |
-
-- **XGBoost** → More accurate for predicting short-term spend.  
-- **Lifetimes** → Better at long-term value estimation and ranking customers.  
-
----
-
-## 🚀 Strategic Recommendations
-- **Targeted Marketing**: Focus campaigns on mid-tier UK customers to push them into top-tier.  
-- **Product Promotion**: Double down on high-margin categories favored by top-tier buyers.  
-- **Forecasting**: Use XGBoost for **short-term budgeting**, Lifetimes for **long-term strategy**.  
-
----
-
-## 🛠️ Tech Stack
-- **Python**
-- **lifetimes** (BG/NBD + Gamma-Gamma models)
-- **XGBoost**
-- **pandas, numpy, matplotlib, seaborn**
-- **Jupyter Notebook**
+| Metric | Raw Value | Cleaned Value | Business Meaning / Action |
+|---|---|---|---|
+| **Total Rows** | 1,067,371 | 805,549 | 261,822 rows filtered across 5 audit gates |
+| **Missing Customer IDs** | 243,007 rows | 0 | Removed guest checkouts (cannot track customer history) |
+| **Cancelled Orders ('C')** | 18,744 rows | 0 | Excluded refunds/cancellations from gross sales |
+| **Zero/Negative Prices** | 71 rows | 0 | Removed accounting adjustments & data entry errors |
+| **Total Revenue** | — | **£17,743,429.18** | Net commercial sales over 2 full financial years |
+| **Unique Customers** | 5,942 | **5,878** | Identified 4,189 repeat buyers & 1,689 one-time buyers |
+| **Unique Invoices** | 53,628 | **36,969** | Distinct purchasing events |
+| **Average Order Value (AOV)** | — | **£479.95** | Baseline transaction size across wholesale/retail |
+| **Average Revenue / Customer** | — | **£3,018.62** | Cumulative customer value over 2-year window |
+| **Date Span** | Dec 1, 2009 – Dec 9, 2011 | Dec 1, 2009 – Dec 9, 2011 | 24 full months of continuous sales data |
+| **Primary Market** | United Kingdom | United Kingdom | Core UK market generates >85% of total turnover |
 
 ---
 
+## 💰 Predicted CLV & Customer Segmentation (Next 6 Months)
+
+Predictions were generated by combining BG/NBD frequency estimates and Gamma-Gamma monetary forecasts discounted at a standard 1% monthly rate:
+
+| Customer Segment | Customer Count | Share (%) | Avg. Predicted CLV | Total Segment CLV | CLV Contribution Share | Recommended Commercial Strategy |
+|---|---|---|---|---|---|---|
+| **🟢 High Value** | 1,999 | 34.0% | **£1,976.44** | **£3,950,913.54** | **90.9%** | Dedicated B2B account managers, priority SLAs, custom bulk volume pricing |
+| **🟡 Medium Value** | 1,939 | 33.0% | **£201.05** | **£389,845.59** | **9.0%** | Basket-size threshold discounts ("Spend £250 for 15% off"), category cross-selling |
+| **🔴 Low Value** | 1,940 | 33.0% | **£3.37** | **£6,538.83** | **0.1%** | Automated low-cost digital win-back campaigns, exit surveys to identify churn causes |
+| **Overall Base** | **5,878** | **100%** | **£739.59** | **£4,347,297.96** | **100.0%** | **Total portfolio expected value over the next 6 calendar months** |
 
 ---
 
-## 📈 Future Work
-- Add deep learning models (RNNs/Transformers) for CLV prediction.  
-- Integrate demographic & behavioral features for richer profiling.  
-- Automate pipeline for real-time CLV updates.  
+## 📈 Model Comparison: Lifetimes vs. XGBoost
+
+Both models were trained strictly on a **21-month calibration period** (Dec 2009 – Sep 2011) and evaluated against a **3-month holdout period** (Sep 2011 – Dec 2011) to eliminate data leakage.
+
+| Evaluation Metric | Lifetimes (BG/NBD + Gamma-Gamma) | XGBoost Regressor | Analytical Finding |
+|---|---|---|---|
+| **Mean Absolute Error (MAE)** | **£487.32** | **£622.59** | Lifetimes error is **21.7% lower** (£135.27 better per customer) |
+| **Root Mean Squared Error (RMSE)** | **£3,178.46** | **£3,351.76** | Lifetimes achieves lower overall variance across high spenders |
+| **Holdout Horizon** | 3 Months | 3 Months | Exact identical evaluation test set across 5,279 active calibration customers |
+| **Handling of Inactivity** | Closed-form Poisson & Beta dropout | Tree splits on engineered lag features | Lifetimes naturally handles zero-inflation and sparse retail re-purchasing |
+| **Best Production Use Case** | **Strategic LTV forecasting, churn scoring** | **Short-term feature-rich tactical spend prediction** | Use Lifetimes for portfolio valuation; XGBoost for short-term multi-feature campaigns |
 
 ---
 
-## ✍️ Author
-Project developed for **Customer Analytics & Forecasting** use case.  
-Feel free to contribute or suggest improvements via issues or pull requests.
+## 🛠️ Tech Stack & Architecture
 
+- **Language**: Python 3.11+
+- **Probabilistic Modeling**: `lifetimes` (BG/NBD, Gamma-Gamma, RFM summary utility)
+- **Machine Learning**: `xgboost` (XGBRegressor), `scikit-learn` (MAE, RMSE, train-test split)
+- **Data Engineering**: `pandas`, `numpy`, `openpyxl`
+- **Visualization**: `matplotlib`, `seaborn` (static analysis in notebook), `plotly` (interactive dashboard charts)
+- **Application Layer**: `streamlit` (multi-page responsive dashboard)
 
-## 📂 Project Structure
+---
+
+## 📂 Project Organization
 
 ```text
-├── CLV.ipynb        # Customer Lifetime Value analysis & modeling notebook
-└── README.md        # Project documentation and insights summary
+CLV_Project/
+├── data/
+│   └── online_retail_II.xlsx         # Master Excel transaction file (Year 2009-2010 & Year 2010-2011)
+├── notebooks/
+│   └── CLV_Analysis.ipynb            # Fully executed 76-cell Jupyter Notebook with all EDA & models
+├── outputs/
+│   ├── cleaned_data.csv              # Audited 805,549-row clean transaction dataset
+│   ├── customer_clv.csv              # Customer-level predictions (CLV, purchases, prob_alive, recency, etc.)
+│   ├── customer_segments.csv         # Customer segment tiers (High, Medium, Low) and revenue
+│   ├── model_metrics.csv             # Holdout MAE and RMSE performance comparison
+│   └── validation_data.csv           # Customer-level actual vs. predicted validation records
+├── models/
+│   ├── bg_nbd_model.pkl              # Pickled trained BG/NBD model (dill serialized)
+│   └── gamma_gamma_model.pkl         # Pickled trained Gamma-Gamma model (dill serialized)
+├── app.py                            # 5-Page interactive Streamlit dashboard
+├── generate_outputs.py               # Standalone pipeline to process data, fit models, and save outputs
+├── requirements.txt                  # Locked Python library dependencies
+├── CLV_Interview_Guide.md            # Comprehensive 30+ question interview preparation guide
+└── README.md                         # Project documentation and performance synthesis
 ```
+
+---
+
+## 🚀 Step-by-Step Local Setup & Execution
+
+### 1. Clone or Extract the Project
+Ensure you are in the `CLV_Project` folder:
+```bash
+cd CLV_Project
+```
+
+### 2. Install Required Python Packages
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Generate Processed Data & Train Models (Run Once)
+The outputs and models are already pre-generated in `outputs/` and `models/`. If you wish to retrain or rerun from raw data:
+```bash
+python generate_outputs.py
+```
+*(Takes approximately 1–2 minutes to parse the 1M+ Excel rows, train both models, and export CSVs).*
+
+### 4. Launch the Streamlit Dashboard
+```bash
+streamlit run app.py
+```
+Your default web browser will open `http://localhost:8501` automatically.
+
+### 5. Inspect the Executed Jupyter Notebook
+Open `notebooks/CLV_Analysis.ipynb` in VS Code or Jupyter Lab. The notebook is pre-executed with all 38 output cells, embedded visual plots, and detailed business interpretations.
+
+---
+
+## 📱 Streamlit Dashboard Architecture
+
+The dashboard is structured into five distinct commercial modules:
+
+1. **🏠 Executive Overview**:
+   - High-level KPI cards: Total Revenue (£17.74M), Unique Customers (5,878), Transactions (36,969), AOV (£479.95), and Avg 6M CLV (£739.59).
+   - Interactive monthly revenue trajectory and new customer acquisition bars.
+   - Segmentation pie chart and average CLV breakdown.
+2. **👥 Customer Analytics**:
+   - Interactive country filter (43 countries) and date range selector.
+   - Purchase frequency histogram, top 10 customer revenue bar chart, new vs. returning revenue split.
+   - Monthly active customer (MAC) engagement trendline.
+3. **💰 CLV Prediction & Individual Lookup**:
+   - 6-Month CLV distribution histogram and top 10 highest-value customer accounts.
+   - **Customer Lookup Engine**: Select any Customer ID to view their exact Recency, Frequency, Customer Age (T), Probability Alive, Predicted 6-Month Spend, and Assigned Segment.
+   - Sortable 100-row customer CLV data table.
+4. **🎯 Customer Segmentation & Strategy**:
+   - Head-to-head comparison cards for High, Medium, and Low-value segments.
+   - Revenue contribution share vs. predicted CLV share.
+   - Segment purchasing pattern table (Average Frequency, Recency, Basket Value, and Retention Rate).
+   - Expandable, actionable marketing playbooks tailored to each cohort.
+5. **📈 Model Performance & Diagnostics**:
+   - Side-by-side MAE and RMSE comparison charts between Lifetimes and XGBoost.
+   - Interactive Actual vs. Predicted scatter plots with 45-degree reference lines.
+   - Transparent documentation of probabilistic and machine learning limitations in retail settings.
