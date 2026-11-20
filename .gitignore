@@ -16,3 +16,11 @@ Thumbs.db
 .vscode/
 .idea/
 ~$*
+
+# Archives
+*.zip
+
+# Local Interview Preparation Documents (Internal Only)
+CLV_Interview_Guide.md
+INTERVIEW.md
+INTERVIEW_DEFENSE.md

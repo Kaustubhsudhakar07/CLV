@@ -92,7 +92,6 @@ CLV_Project/
 ├── app.py                            # 5-Page interactive Streamlit dashboard
 ├── generate_outputs.py               # Standalone pipeline to process data, fit models, and save outputs
 ├── requirements.txt                  # Locked Python library dependencies
-├── CLV_Interview_Guide.md            # Comprehensive 30+ question interview preparation guide
 └── README.md                         # Project documentation and performance synthesis
 ```
 
