@@ -24,3 +24,8 @@ Thumbs.db
 CLV_Interview_Guide.md
 INTERVIEW.md
 INTERVIEW_DEFENSE.md
+
+# Local Outputs, Models & Helper Scripts
+models/
+outputs/
+generate_outputs.py

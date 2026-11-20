@@ -75,22 +75,16 @@ Both models were trained strictly on a **21-month calibration period** (Dec 2009
 ## 📂 Project Organization
 
 ```text
-CLV_Project/
 ├── data/
-│   └── online_retail_II.xlsx         # Master Excel transaction file (Year 2009-2010 & Year 2010-2011)
-├── notebooks/
-│   └── CLV_Analysis.ipynb            # Fully executed 76-cell Jupyter Notebook with all EDA & models
-├── outputs/
+│   ├── online_retail_II.xlsx         # Master Excel transaction file (Year 2009-2010 & Year 2010-2011)
 │   ├── cleaned_data.csv              # Audited 805,549-row clean transaction dataset
 │   ├── customer_clv.csv              # Customer-level predictions (CLV, purchases, prob_alive, recency, etc.)
 │   ├── customer_segments.csv         # Customer segment tiers (High, Medium, Low) and revenue
 │   ├── model_metrics.csv             # Holdout MAE and RMSE performance comparison
 │   └── validation_data.csv           # Customer-level actual vs. predicted validation records
-├── models/
-│   ├── bg_nbd_model.pkl              # Pickled trained BG/NBD model (dill serialized)
-│   └── gamma_gamma_model.pkl         # Pickled trained Gamma-Gamma model (dill serialized)
+├── notebooks/
+│   └── CLV_Analysis.ipynb            # Fully executed 76-cell Jupyter Notebook with all EDA & models
 ├── app.py                            # 5-Page interactive Streamlit dashboard
-├── generate_outputs.py               # Standalone pipeline to process data, fit models, and save outputs
 ├── requirements.txt                  # Locked Python library dependencies
 └── README.md                         # Project documentation and performance synthesis
 ```
@@ -100,9 +94,9 @@ CLV_Project/
 ## 🚀 Step-by-Step Local Setup & Execution
 
 ### 1. Clone or Extract the Project
-Ensure you are in the `CLV_Project` folder:
 ```bash
-cd CLV_Project
+git clone https://github.com/Kaustubhsudhakar07/CLV.git
+cd CLV
 ```
 
 ### 2. Install Required Python Packages
@@ -110,20 +104,14 @@ cd CLV_Project
 pip install -r requirements.txt
 ```
 
-### 3. Generate Processed Data & Train Models (Run Once)
-The outputs and models are already pre-generated in `outputs/` and `models/`. If you wish to retrain or rerun from raw data:
-```bash
-python generate_outputs.py
-```
-*(Takes approximately 1–2 minutes to parse the 1M+ Excel rows, train both models, and export CSVs).*
-
-### 4. Launch the Streamlit Dashboard
+### 3. Launch the Streamlit Dashboard
+The pre-processed dataset and predictions are already provided inside `data/`:
 ```bash
 streamlit run app.py
 ```
 Your default web browser will open `http://localhost:8501` automatically.
 
-### 5. Inspect the Executed Jupyter Notebook
+### 4. Inspect the Executed Jupyter Notebook
 Open `notebooks/CLV_Analysis.ipynb` in VS Code or Jupyter Lab. The notebook is pre-executed with all 38 output cells, embedded visual plots, and detailed business interpretations.
 
 ---

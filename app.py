@@ -10,7 +10,6 @@ import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 import os
-import pickle
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -24,31 +23,36 @@ st.set_page_config(
 
 # ── Paths ──────────────────────────────────────────────────────────────────
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-OUTPUT_DIR = os.path.join(BASE_DIR, "outputs")
-MODEL_DIR = os.path.join(BASE_DIR, "models")
+DATA_DIR = os.path.join(BASE_DIR, "data")
+OUTPUT_DIR = os.path.join(BASE_DIR, "outputs") if os.path.exists(os.path.join(BASE_DIR, "outputs")) else DATA_DIR
+
+def _get_path(filename):
+    if os.path.exists(os.path.join(DATA_DIR, filename)):
+        return os.path.join(DATA_DIR, filename)
+    return os.path.join(OUTPUT_DIR, filename)
 
 # ── Load Data (cached) ────────────────────────────────────────────────────
 @st.cache_data
 def load_cleaned_data():
-    df = pd.read_csv(os.path.join(OUTPUT_DIR, "cleaned_data.csv"))
+    df = pd.read_csv(_get_path("cleaned_data.csv"))
     df["InvoiceDate"] = pd.to_datetime(df["InvoiceDate"])
     return df
 
 @st.cache_data
 def load_customer_clv():
-    return pd.read_csv(os.path.join(OUTPUT_DIR, "customer_clv.csv"))
+    return pd.read_csv(_get_path("customer_clv.csv"))
 
 @st.cache_data
 def load_segments():
-    return pd.read_csv(os.path.join(OUTPUT_DIR, "customer_segments.csv"))
+    return pd.read_csv(_get_path("customer_segments.csv"))
 
 @st.cache_data
 def load_metrics():
-    return pd.read_csv(os.path.join(OUTPUT_DIR, "model_metrics.csv"))
+    return pd.read_csv(_get_path("model_metrics.csv"))
 
 @st.cache_data
 def load_validation():
-    return pd.read_csv(os.path.join(OUTPUT_DIR, "validation_data.csv"))
+    return pd.read_csv(_get_path("validation_data.csv"))
 
 # Load all data
 try:
